@@ -2,5 +2,18 @@ baseURL = "https://sean.eulenberg.de/"
 languageCode = "en-us"
 title = "Projects, thoughts & more"
 theme = "tale"
+[menu]
+[[menu.main]]
+    identifier = "posts"
+    name = "Posts"
+    title = "Posts"
+    url = "/posts/"
+    weight = 1
+  [[menu.main]]
+    identifier = "about"
+    name = "About"
+    title = "About"
+    url = "/about/"
+    weight = 0
 [Params]
 css = ["custom.css"]
