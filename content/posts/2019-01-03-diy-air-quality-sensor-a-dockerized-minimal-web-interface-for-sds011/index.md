@@ -4,9 +4,6 @@ date: 2019-01-03 07:22:48 +0200
 categories: projects
 tags: docker air quality sensor webapp diy
 author: Sean Eulenberg
-resources:
-  - name: final
-    src: 03_final_build.jpeg
 ---
 
 Two weeks ago, with New Year’s Eve (and its pollution levels) around the corner, I was given a nova PM sensor (SDS011) by my granddad (pretty cool granddad, right?). Having done mostly computing online courses ([FromNand2Tetris](https://www.coursera.org/learn/build-a-computer "FromNand2Tetris on Coursera"); [Programming Languages](https://www.coursera.org/learn/programming-languages "Programming Languages on Coursera")) during the last weeks, I decided to get practical and to use the opportunity to build an application that talks to the SDS011 and visualizes the air quality levels, while learning to use [Docker](https://docker.io/ "Docker") (an incredibly powerful [application virtualization](https://www.docker.com/resources/what-container "Application virtualization on Wikipedia") software).
