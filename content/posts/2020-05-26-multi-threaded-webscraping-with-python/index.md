@@ -5,6 +5,7 @@ date: 2020-05-26 17:33:26 +0200
 categories: projects
 tags: programming web
 author: Sean Eulenberg
+summary: Some websites don’t have the time, resources or (economic) interest to expose public APIs. Yet, sometimes you still need to extract structured data from them.
 ---
 
 # The story
