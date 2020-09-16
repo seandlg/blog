@@ -2,6 +2,7 @@ baseURL = "https://sean.eulenberg.de/"
 languageCode = "en-us"
 title = "Projects, thoughts & more"
 theme = "tale"
+summaryLength = 20
 [menu]
 [[menu.main]]
     identifier = "posts"
