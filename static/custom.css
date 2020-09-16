@@ -16,3 +16,7 @@ figure {
   padding: 1em;
   border-radius: 0.5em;
 }
+
+video {
+  max-height: 50vh;
+}
