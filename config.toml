@@ -1,0 +1,6 @@
+baseURL = "https://sean.eulenberg.de/"
+languageCode = "en-us"
+title = "Projects, thoughts & more"
+theme = "tale"
+[Params]
+css = ["custom.css"]
