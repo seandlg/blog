@@ -20,3 +20,23 @@ figure {
 video {
   max-height: 50vh;
 }
+
+.cleanUL {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cleanULItem {
+  margin: 0;
+  text-align: left;
+}
+
+.svg-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 5px;
+  position: relative;
+  top: 2px;
+  fill: #828282;
+}
