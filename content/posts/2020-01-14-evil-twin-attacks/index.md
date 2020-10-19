@@ -271,7 +271,7 @@ We can now also see all DNS queries.
 
 ## 5. The Man in the Middle
 
-The user is connected to our Wi-Fi. Let's try to lure him/her to typing into their password into our fake router website. For this, we configure `dnsmasq` to return the IP address of our local server for every request. We add the following line to `dnsmasq.conf`:
+The user is connected to our Wi-Fi. Let's try to lure him/her into typing their password into our fake router website. For this, we configure `dnsmasq` to return the IP address of our local server for every request. We add the following line to `dnsmasq.conf`:
 
 ```text
 address=/#/192.168.1.1
