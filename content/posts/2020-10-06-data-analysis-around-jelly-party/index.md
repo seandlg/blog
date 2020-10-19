@@ -17,7 +17,7 @@ The Jelly Party Server constantly pushes anonymized data into an `elasticsearch`
 
 ## Connecting to `elasticsearch`
 
-It turns out that we can query data from `elasticsearch` using the native `Python` library.
+It turns out that we can query data from `elasticsearch` using a native `Python` library.
 
 ```python
 from elasticsearch import Elasticsearch
@@ -40,7 +40,7 @@ es.info()
 
 ## Downloading data
 
-A connection allows us to recursively query data from `elasticsearch`, saving each data entry into the list `items`. Luckily we're still in a position to load all data into `RAM`.
+Once connected, we can recursively query data from `elasticsearch`, saving each data entry into a list called `items`. Luckily we're still in a position to greedily load all data into `RAM`.
 
 ```python
 es_response = scan(
@@ -264,7 +264,7 @@ We'll use a `t-test` (specifically [Welch's t-test](https://www.wikiwand.com/en/
 Ttest_indResult(statistic=17.166169405158687, pvalue=1.5361992613156065e-65)
 ```
 
-Since we use `Ttest_indResult` we must divide our (already neglibibly small) `pvalue` by 2 ([see here why](https://stackoverflow.com/a/49834007/7383573)), but obviously we remain correct (at least statistically speaking) in our assumption that Youtube sessions are shorter than Netflix sessions.
+Since we use `Ttest_indResult`, which is a two-sided test, but we're interested in a one-sided test, we must divide our (already neglibibly small) `pvalue` by 2 ([see here why](https://stackoverflow.com/a/49834007/7383573)). We still remain correct (at least statistically speaking) in our assumption that Youtube sessions are shorter than Netflix sessions.
 
 # Takeaways
 
