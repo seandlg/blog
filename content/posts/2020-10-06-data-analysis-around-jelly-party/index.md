@@ -202,9 +202,18 @@ soap2day.to	        22	                35.0	            685
 www.crave.ca	    69	                77.0	            418
 ```
 
+### Really, we should vectorize this..
+
+Calling `.apply` is bad practice, because it doesn't vectorize computations. Thus, a Todo for later remains to fully vectorize the code. E.g. for computing the mean, this could look as follows:
+
+```python
+group_obj = session_df.groupby("netloc", dropna=True)["Session duration"]
+group_obj.mean(numeric_only=False)
+```
+
 ## Plotting histograms
 
-Kinda neat, though we aggregate unknown distributions. Let's plot histograms to visualize the respective distributions a little better. We built a little helper function that accepts a `hostname` and returns a figure with two histograms, one looking at the `[0,120]` range and the other one looking at the `[10,300]` range (we'll explain why we chose those ranges in a second).
+Alright. This is kinda neat, though we aggregate unknown distributions. Let's plot histograms to visualize the respective distributions a little better. We built a little helper function that accepts a `hostname` and returns a figure with two histograms, one looking at the `[0,120]` range and the other one looking at the `[10,300]` range (we'll explain why we chose those ranges in a second).
 
 ```python
 def buildHistogram(host):
