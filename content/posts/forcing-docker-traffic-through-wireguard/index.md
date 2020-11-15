@@ -83,7 +83,7 @@ Notably, we attach the container to our network using `bridging` and forward por
 
 ## Making the networking namespace accessible to `ip`
 
-It turns out that we can use `ip` to create network-namespaces **and to run commands within a network namespace**, using `ip netns exec namespace_name cmd` (or the simpler version that we'll stick to: `ip -n namespace_name cmd`). However, `ip netns list` reveals that even though our docker container lives in its own networking namespace, `ip` doesn't seem to know about it. We can fix this with the following few lines ([source](https://platform9.com/blog/container-namespaces-deep-dive-container-networking/)), which create a symlink to our container's network namespace in the `/var/run/netns`-directory, which is where `ip` looks for network namespaces.
+It turns out that we can use `ip` to create network-namespaces **and to run commands within a network namespace**, using `ip netns exec namespace_name cmd` (or the simpler version for IP-commands: `ip -n namespace_name ip_cmd`). However, `ip netns list` reveals that even though our docker container lives in its own networking namespace, `ip` doesn't seem to know about it. We can fix this with the following few lines ([source](https://platform9.com/blog/container-namespaces-deep-dive-container-networking/)), which create a symlink to our container's network namespace in the `/var/run/netns`-directory, which is where `ip` looks for network namespaces.
 
 ```bash
 #!/bin/bash
@@ -96,13 +96,14 @@ ln -sf /proc/$pid/ns/net /var/run/netns/container
 Using our "new" namespace named `container`, we can now create and configure a wireguard interface in our default namespace, and then move it into the `container`-namespace.
 
 ```bash
+#!/bin/bash
 # Create a wireguard network interface
 ip link add wg0 type wireguard
 # Move the wireguard network interface to the above identified docker container
 ip link set wg0 netns container
-# Replace ww.xx.yy.zz/16 with an IP address assigned to you by your VPN provider
-ip -n container addr add ww.xx.yy.zz/16 dev wg0
-ip -n container wg setconf wg0 ./wg0.conf
+# Replace www.xxx.yyy.zzz/16 with an IP address assigned to you by your VPN provider
+ip -n container addr add www.xxx.yyy.zzz/16 dev wg0
+ip netns exec container wg setconf wg0 ./wg0.conf
 ip -n container link set wg0 up
 ip -n container route del default
 ip -n container route add default dev wg0
@@ -111,8 +112,55 @@ ip -n container route add default dev wg0
 This setup works, and all traffic is now forced through the `wg0` interface. Sweet! However, the service is not accessible to host `localhost` anymore. A quick inspection using [`tcpdump`]() reveals that traffic that was previously routed back via `172.17.0.1` is now routed via the VPN, where it vanishes into the depth of a data center. We can quickly fix this by adding a route for traffic that we want to route back via the bridge.
 
 ```bash
+#!/bin/bash
 # Enable bridged packets to return
-ip netns exec container ip route add 192.168.178.0/24 via 172.17.0.1
+ip -n container route add 192.168.178.0/24 via 172.17.0.1
 ```
 
 Lastly, make sure to double-check the contents of `/etc/resolv.conf`, to ensure that your DNS traffic goes to either your VPN's DNS, or a DNS-server that you have chosen specifically. In briding mode, `Docker` should copy your host's `/etc/resolv.conf` into the container. However, if you're using a local DNS resolver, e.g. to encrypt DNS traffic, things might break.
+
+In a bash script, this could look as follows (run as `root` & replace IP address with address from VPN provider):
+
+```bash
+#!/bin/bash
+reset() {
+    echo "Resetting things.."
+    docker-compose down &> /dev/null
+    ip link del wg0 2> /dev/null
+    rm /var/run/netns/container 2> /dev/null
+}
+# Reset everything
+reset
+# Create docker container
+docker-compose up --build -d
+# Get PID and set up networking interface
+pid=$(docker inspect -f '{{.State.Pid}}' "deluge")
+# Check that we have a valid container PID
+if [[ -z $pid ]]; then
+    echo "Error creating container"
+    exit 1
+fi
+mkdir -p /var/run/netns
+ln -sf /proc/$pid/ns/net /var/run/netns/container
+ip link add wg0 type wireguard
+ip link set wg0 netns container
+ip -n container addr add www.xxx.yyy.zzz/16 dev wg0
+ip netns exec container wg setconf wg0 ./wg0.conf
+ip -n container link set wg0 up
+ip -n container route del default
+ip -n container route add default dev wg0
+ip -n container route add 192.168.178.0/24 via 172.17.0.1
+# Assert that the container accesses the net via VPN
+HOST_IP=$(curl -4 -s ifconfig.co)
+CONTAINER_IP=$(docker exec deluge curl -s -4 ifconfig.co)
+if [[ $HOST_IP == $CONTAINER_IP ]]; then
+  echo "Error with VPN-config. Container IP matches Host IP!"
+  reset
+  exit 1
+else
+  echo "Container created successfully. Traffic routing through VPN enabled"
+fi
+
+```
+
+In the future, I'll look into `IPv6`-traffic through Wireguard.
