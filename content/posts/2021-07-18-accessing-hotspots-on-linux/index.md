@@ -16,7 +16,7 @@ A hotspot usually presents itself as an __open__ (i.e. no passphrase required) w
 
 <cite>— Wikipedia</cite>
 
-The network host usually remembers devices by their unique [_media access code_](https://www.wikiwand.com/en/Medium_access_control). Anyways, the important point is: Almost all problems concerning _hotspot access_ revolve around __problems accessing the captive portal__. We can group these problems into three categories:
+After successfully unlocking the network, the network host usually "remembers" a device by its unique [_media access code_](https://www.wikiwand.com/en/Medium_access_control). Anyways, the important point is: Almost all problems concerning _hotspot access_ revolve around __problems accessing the captive portal__. We can group these problems into three categories:
 
 ## 1. Autodetection problems
 Many operating systems (think `MacOS`, `Windows`) automatically detect when they connect to an open network that requires _"solving a captive portal challenge"_, through multiple smart network tests. If your Linux distribution is not configured for this, a friendly Popup asking you to go through the __captive portal__ may not pop up upon connecting to the network.
